@@ -1,6 +1,6 @@
 {
   "name": "json-compressor",
-  "version": "0.1",
+  "version": "1.0",
   "description": "compressing and decompressing JSON data using HPack and Gzip compression algorithm.",
   "main": "index.js",
   "scripts": {
@@ -16,10 +16,11 @@
     "compression",
     "json-compressor"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BruderJulian/json-compressor.git"
+  },
   "readmeFilename": "README.md",
   "author": "BruderJulian",
-  "license": "MIT",
-  "devDependencies": {
-    "jasmine": "^5.3.0"
-  }
+  "license": "MIT"
 }
