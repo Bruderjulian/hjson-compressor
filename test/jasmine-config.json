@@ -1,0 +1,12 @@
+{
+  "spec_dir": "test",
+  "spec_files": [
+    "main.js"
+  ],
+  "env": {
+    "failSpecWithNoExpectations": false,
+    "stopSpecOnExpectationFailure": false,
+    "stopOnSpecFailure": false,
+    "random": false
+  }
+}

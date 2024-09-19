@@ -1,47 +1,25 @@
 {
-  "name": "json-pack-gzip",
-  "version": "0.0.0-development",
-  "description": "A module for compressing and decompressing JSON data using Gzip compression algorithm and HPack compression algorithm.",
+  "name": "json-compressor",
+  "version": "0.1",
+  "description": "compressing and decompressing JSON data using HPack and Gzip compression algorithm.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "eslint": "./node_modules/eslint/bin/eslint.js --max-warnings 0 --ext .js .",
-    "eslint:fix": "./node_modules/eslint/bin/eslint.js --max-warnings 0 --ext .js --fix .",
-    "semantic-release": "semantic-release"
+    "test": "jasmine --config=./test/jasmine-config.json"
   },
   "keywords": [
     "JSON",
+    "json",
     "HPack",
-    "Gzip"
+    "Gzip",
+    "compress",
+    "compressor",
+    "compression",
+    "json-compressor"
   ],
-  "maintainers": [
-    {
-      "name": "Syibbran Mulaesyi",
-      "email": "msyibbran24@gmail.com"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MkDierz/json-pack-gzip.git"
-  },
   "readmeFilename": "README.md",
-  "author": "Syibbran Mulaesyi",
+  "author": "BruderJulian",
   "license": "MIT",
   "devDependencies": {
-    "@types/debug": "^4.1.8",
-    "eslint": "^8.42.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jest": "^27.2.1",
-    "jest": "^29.5.0",
-    "node-mocks-http": "^1.12.2",
-    "semantic-release": "^21.0.7"
-  },
-  "dependencies": {
-    "debug": "^4.3.4",
-    "dotenv": "^16.0.3"
-  },
-  "publishConfig": {
-    "@MkDierz:registry": "https://npm.pkg.github.com"
+    "jasmine": "^5.3.0"
   }
 }

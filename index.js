@@ -1,139 +1,71 @@
-require('dotenv').config();
-const { gunzip, gzip } = require('./lib/gzip');
-const {
-    pack, unpack, parse, stringify,
-} = require('./lib/hpack');
-const { calculateSize } = require('./utils/calculateSize');
-const { debugWrapper } = require('./utils/debugWrapper');
-
+const { gunzip, gzip } = require("./lib/gzip");
+const { pack, unpack, parse, stringify } = require("./lib/hpack");
+const { Buffer } = require("buffer");
 /**
- * Compresses a JSON object using the Gzip compression algorithm. This is accomplished by first
- * stringifying the JSON object, and then compressing it into a Buffer object. If the debug
- * parameter is set to true, the function measures and logs the performance and the size
- * of the compressed data.
+ * Compresses a JSON object using the HPack and Gzip compression algorithm.
  *
  * @function compress
- * @param {Object} jsonObject - The JSON object that needs to be compressed.
- * @param {boolean} [debug=false] - Optional parameter that defaults to false. If set to true,
- * it will measure the performance and size of the compressed data and log these details.
- * @returns {Buffer} The compressed data as a Buffer object. If an error occurs during
- * compression, an Error is thrown.
+ * @param {Object} jsonObject - The JSON object to be compressed.
+ * @returns {Buffer} The compressed data as a Buffer object. If an error occurs, an Error is thrown.
  * @throws {Error} If an error occurs during the compression process.
  */
-function compress(jsonObject, debug = false) {
-    const [startDebug, endDebug, errorDebug] = debugWrapper('compress');
-    try {
-        if (debug) {
-            startDebug();
-        }
-
-        const hPacked = stringify(jsonObject);
-        const bufferOriginal = Buffer.from(hPacked, 'utf-8');
-        const gzipped = gzip(bufferOriginal);
-
-        if (debug) {
-            endDebug(jsonObject, gzipped);
-        }
-
-        return gzipped;
-    } catch (error) {
-        return errorDebug(error);
-    }
+function compress(jsonObject) {
+  try {
+    return gzip(Buffer.from(stringify(jsonObject), "utf-8"));
+  } catch (err) {
+    var tempError = new Error("Could not compress due " + err);
+    tempError.stack = (err.stack, "").substring(err.stack.indexOf("\n"));
+    throw tempError;
+  }
 }
 
 /**
- * Decompresses a Buffer object into a JSON object using the Gzip decompression algorithm.
- * This is accomplished by first decompressing the Buffer object and then parsing it into
- * a JSON object. If the debug parameter is set to true, the function measures and logs the
- * performance and the size of the decompressed data.
+ * Decompresses a Buffer into a JSON object using the HPack and Gzip decompression algorithm.
  *
  * @function decompress
- * @param {Buffer} jsonBuffer - The Buffer object that needs to be decompressed.
- * @param {boolean} [debug=false] - Optional parameter that defaults to false. If set to true,
- * it will measure the performance and size of the decompressed data and log these details.
- * @returns {Object} The decompressed and parsed JSON object. If an error occurs during
- * decompression, the original Buffer object is returned.
- * @throws {Error} If the decompression process fails, an error is logged, but not thrown.
+ * @param {Buffer} jsonBuffer - The Buffer to be decompressed.
+ * @returns {Object} The decompressed and parsed JSON object. If an error occurs, the original Buffer is returned.
+ * @throws {Error} If an error occurs during the decompression process.
  */
-function decompress(jsonBuffer, debug = false) {
-    const [startDebug, endDebug, errorDebug] = debugWrapper('decompress');
-
-    try {
-        if (debug) {
-            startDebug();
-        }
-
-        const bufferDecompressed = gunzip(jsonBuffer);
-        const jsonUnpacked = parse(bufferDecompressed);
-
-        if (debug) {
-            endDebug(jsonUnpacked, jsonBuffer);
-        }
-
-        return jsonUnpacked;
-    } catch (error) {
-        return errorDebug(error);
-    }
+function decompress(jsonBuffer) {
+  try {
+    return parse(gunzip(jsonBuffer));
+  } catch (err) {
+    var tempError = new Error("Could not decompress due " + err);
+    tempError.stack = (err.stack, "").substring(err.stack.indexOf("\n"));
+    throw tempError;
+  }
 }
-async function jsonCompressorMiddleware(req, res, next) {
-    const requestCompressed = 'compressed-request' in req.headers ? req.headers['compressed-request'] : 'none';
-    const responseCompressed = 'compressed-response' in req.headers ? req.headers['compressed-response'] : 'none';
-    res.set('Compressed-Request', requestCompressed || 'none');
-    res.set('Compressed-Response', responseCompressed || 'none');
-    switch (requestCompressed) {
-        case 'full':
-            req.body = decompress(req.body, true);
-            break;
 
-        case 'hpack':
-            req.body = unpack(req.body, false, true);
-            break;
-
-        case 'gzip':
-            req.body = JSON.parse(gunzip(req.body), true);
-            break;
-
-        default:
-            break;
-    }
-
-    const originalSend = res.send;
-
-    res.send = (args) => {
-        let newArgs = args;
-        if (newArgs instanceof Object) {
-            switch (responseCompressed) {
-                case 'full':
-                    newArgs = compress(newArgs, true);
-                    break;
-
-                case 'hpack':
-                    newArgs = pack(newArgs, false, true);
-                    break;
-
-                case 'gzip':
-                    newArgs = gzip(JSON.stringify(newArgs), true);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        res.send = originalSend;
-        return res.send(newArgs);
-    };
-    next();
+/**
+ * Calculate the byte length of the input data.
+ * It supports data types: String, Buffer, Array, and Object.
+ * For non-buffer objects, it first stringifies it before calculating the size.
+ *
+ * @param {String|Buffer|Object|Array} data - The data to be calculated.
+ * @returns {Number} The byte length of the input data.
+ */
+function calculateSize(data) {
+  if (
+    typeof data === "string" ||
+    data instanceof String ||
+    data instanceof Buffer
+  ) {
+    return Buffer.byteLength(data);
+  }
+  if (typeof data === "object" && data !== null)
+    return Buffer.byteLength(JSON.stringify(data));
+  return 0;
 }
 
 module.exports = {
-    compress,
-    decompress,
-    pack,
-    unpack,
-    parse,
-    stringify,
-    gzip,
-    gunzip,
-    calculateSize,
-    jsonCompressorMiddleware,
+  compress,
+  decompress,
+  pack,
+  unpack,
+  parse,
+  stringify,
+  gzip,
+  gunzip,
+  calculateSize,
 };

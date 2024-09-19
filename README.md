@@ -1,52 +1,50 @@
-# json-pack-gzip
+# json-compressor
 
-A module for compressing and decompressing JSON data using Gzip compression algorithm and HPack compression algorithm.
+Compressing and decompressing JSON data using HPack and Gzip compression algorithm. Modified Version of [json-pack-gzip](http://npmjs.org/).
 
 ## Installation
 
-Use the package manager [npm](http://npmjs.org/) to install json-pack-gzip.
+Install json-compressor with [npm](http://npmjs.org/).
 
 ```bash
-npm install json-pack-gzip
+npm install json-compressor
 ```
 ## Usage
 
 ```javascript
-const jsonPackGzip = require('json-pack-gzip');
+const compressor = require('json-compressor');
 
 // Compress JSON data
-const compressedData = jsonPackGzip.compress(jsonObject);
+const compressedData = compressor.compress(obj);
 
 // Decompress JSON data
-const decompressedData = jsonPackGzip.decompress(jsonBuffer);
+const decompressedData = compressor.decompress(objBuffer);
 
 // Calculate byte length of data
-const byteLength = jsonPackGzip.calculateSize(data);
+const byteLength = compressor.calculateSize(data);
 ```
 
 ## API
 
-### ```compress(jsonObject, debug = false)```
+### ```compress(jsonObject)```
 
-Compresses a JSON object using Gzip compression algorithm. The input JSON object is first packed into a homogeneous array and then stringified before compression.
+Compresses a JSON object using HPack and Gzip compression algorithm. The input JSON object is first packed into a homogeneous array and then stringified before compression.
 
 - ```jsonObject```(Array): The JSON object to be compressed.
-- ```debug```(Boolean): options for debugging, defaults to false.
 
-Returns a compressed data as a Buffer object.
+Returns a compressed data as a Buffer.
 
-### ```decompress(jsonBuffer, debug = false)```
-Decompresses a Buffer object to a JSON object using Gzip decompression algorithm. The decompressed data is first parsed from a homogeneous array into a list of objects.
+### ```decompress(jsonBuffer)```
+Decompresses a Buffer to a JSON object.
 
-- ```jsonBuffer``` (Buffer): The Buffer object to be decompressed.
-- ```debug```(Boolean): options for debugging, defaults to false.
+- ```jsonBuffer``` (Buffer): The Buffer to be decompressed.
 
 Returns a decompressed and unpacked JSON object as a list of objects.
 
 ### ```calculateSize(data)```
-Calculates the byte length of the input data. It supports data types: String, Buffer, Array, and Object. For non-buffer objects, the function first stringifies them before calculating the size.
+Calculates the byte length of the input data. It supports data types: String, Buffer, Array, and Object. For non-buffer objects, it first stringifies it before calculating the size.
 
-- ```data``` (String|Buffer|Object|Array): The data to be size-calculated.
+- ```data``` (String|Buffer|Object|Array): The data to be calculated.
 
 Returns the byte length of the input data.
 
