@@ -21,6 +21,10 @@
     "type": "git",
     "url": "https://github.com/BruderJulian/hjson-compressor.git"
   },
+  "homepage": "https://github.com/BruderJulian/hjson-compressor",
+  "bugs": {
+    "url": "https://github.com/BruderJulian/hjson-compressor/issues"
+  },
   "contributors": [
     {
       "name": "MkDierz",
