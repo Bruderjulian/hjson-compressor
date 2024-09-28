@@ -1,17 +1,18 @@
-const { gunzip, gzip } = require("./lib/gzip");
-const { pack, unpack, parse, stringify } = require("./lib/hpack");
+const { gunzip, gzip } = require("./lib/gzip.js");
+const hpack = require("./lib/hpack.js");
 const { Buffer } = require("buffer");
+
 /**
  * Compresses a JSON object using the HPack and Gzip compression algorithm.
  *
  * @function compress
- * @param {Object} jsonObject - The JSON object to be compressed.
+ * @param {Object} obj - The JSON object to be compressed.
  * @returns {Buffer} The compressed data as a Buffer object. If an error occurs, an Error is thrown.
  * @throws {Error} If an error occurs during the compression process.
  */
-function compress(jsonObject) {
+function compress(obj) {
   try {
-    return gzip(Buffer.from(stringify(jsonObject), "utf-8"));
+    return gzip(Buffer.from(hpack.stringify(obj), "utf-8"));
   } catch (err) {
     var tempError = new Error("Could not compress due " + err);
     tempError.stack = (err.stack, "").substring(err.stack.indexOf("\n"));
@@ -23,13 +24,13 @@ function compress(jsonObject) {
  * Decompresses a Buffer into a JSON object using the HPack and Gzip decompression algorithm.
  *
  * @function decompress
- * @param {Buffer} jsonBuffer - The Buffer to be decompressed.
+ * @param {Buffer} buf - The Buffer to be decompressed.
  * @returns {Object} The decompressed and parsed JSON object. If an error occurs, the original Buffer is returned.
  * @throws {Error} If an error occurs during the decompression process.
  */
-function decompress(jsonBuffer) {
+function decompress(buf) {
   try {
-    return parse(gunzip(jsonBuffer));
+    return hpack.parse(gunzip(buf));
   } catch (err) {
     var tempError = new Error("Could not decompress due " + err);
     tempError.stack = (err.stack, "").substring(err.stack.indexOf("\n"));
@@ -61,11 +62,13 @@ function calculateSize(data) {
 module.exports = {
   compress,
   decompress,
-  pack,
-  unpack,
-  parse,
-  stringify,
   gzip,
   gunzip,
   calculateSize,
+  pack: hpack.pack,
+  unpack: hpack.unpack,
+  parse: hpack.parse,
+  stringify: hpack.stringify,
+  _parser: hpack._parser,
+  _stringifier: hpack._stringifier,
 };

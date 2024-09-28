@@ -48,6 +48,14 @@ Calculates the byte length of the input data. It supports data types: String, Bu
 
 Returns the byte length of the input data.
 
+## Testing
+
+If you want to run the test, download the source code and run 
+```bash
+npm install jasmine
+```
+after everything is installed, run ```npm run test```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first

@@ -22,5 +22,9 @@
   },
   "readmeFilename": "README.md",
   "author": "BruderJulian",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jasmine": "^5.3.0",
+    "typia": "^6.11.0"
+  }
 }
