@@ -1,6 +1,6 @@
 {
   "name": "hjson-compressor",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "compressing and decompressing homogeneous data using HPack and Gzip compression algorithm.",
   "main": "index.js",
   "scripts": {
@@ -20,9 +20,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BruderJulian/hjson-compressor.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   },
   "homepage": "https://github.com/BruderJulian/hjson-compressor",
   "bugs": {
